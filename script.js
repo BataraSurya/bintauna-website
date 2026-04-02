@@ -127,4 +127,46 @@ document.addEventListener('DOMContentLoaded', () => {
 
   window.addEventListener('scroll', highlightNav, { passive: true });
   highlightNav();
+
+  // --- Localization (EN/ID) Toggle ---
+  const langBtns = document.querySelectorAll('.lang-btn');
+  const elsToTranslate = document.querySelectorAll('[data-i18n], [data-i18n-html]');
+
+  const setLanguage = (lang) => {
+    if (typeof translations === 'undefined' || !translations[lang]) return;
+    
+    // Update active button state globally
+    langBtns.forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.lang === lang);
+    });
+
+    // Translate elements
+    elsToTranslate.forEach(el => {
+      const keyText = el.getAttribute('data-i18n');
+      const keyHtml = el.getAttribute('data-i18n-html');
+      
+      if (keyText && translations[lang][keyText]) {
+        el.textContent = translations[lang][keyText];
+      }
+      
+      if (keyHtml && translations[lang][keyHtml]) {
+        el.innerHTML = translations[lang][keyHtml];
+      }
+    });
+
+    // Save preference
+    localStorage.setItem('bintauna-lang', lang);
+  };
+
+  // Add click listeners to all instances of the toggle
+  langBtns.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      setLanguage(btn.dataset.lang);
+    });
+  });
+
+  // Init language from storage or default
+  const savedLang = localStorage.getItem('bintauna-lang') || 'en';
+  setLanguage(savedLang);
 });
