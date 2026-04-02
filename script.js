@@ -166,7 +166,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Init language from storage or default
-  const savedLang = localStorage.getItem('bintauna-lang') || 'en';
-  setLanguage(savedLang);
+  // Init language: saved preference → browser auto-detect → default 'en'
+  const savedLang = localStorage.getItem('bintauna-lang');
+  const browserLang = navigator.language || navigator.userLanguage || 'en';
+  const detectedLang = browserLang.startsWith('id') ? 'id' : 'en';
+  setLanguage(savedLang || detectedLang);
 });
